@@ -1,0 +1,24 @@
+[project]
+name = "panda-sdl-echem-analyzer"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Greg", email = "gregoryrobben@gmail.com" },
+    { name = "Harley", email = "hjquinn@bu.edu"}
+]
+requires-python = ">=3.11"
+dependencies = [
+    "matplotlib>=3.10.1",
+    "pandas>=2.2.3",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.urls]
+Homepage = "https://github.com/BU-KABlab/panda-sdl-echem-analyzer"
+Issues = "https://github.com/BU-KABlab/panda-sdl-echem-analyzer/issues"
