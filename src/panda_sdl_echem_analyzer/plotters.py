@@ -370,7 +370,7 @@ class CVPlotter(BasePlotter):
                 self._close_figure()
 
     def plot_second_cycle_individual(
-        self, show_plot: bool = True, save_plot: bool = True
+        self, show_plot: bool = True, save_plot: bool = True, style: str = "scatter"
     ) -> None:
         """
         Create individual plots for the second cycle of each file.
@@ -404,12 +404,19 @@ class CVPlotter(BasePlotter):
                 legend_label = match.group(0) if match else "Unknown"
 
                 # Plot data
-                plt.scatter(
-                    df_second_cycle["Vsig"],
-                    df_second_cycle["Im"],
-                    label=legend_label,
-                    s=5,
-                )
+                if style == "scatter":
+                    plt.scatter(
+                        df_second_cycle["Vsig"],
+                        df_second_cycle["Im"],
+                        label=legend_label,
+                        s=5,
+                    )
+                else:
+                    plt.plot(
+                        df_second_cycle["Vsig"],
+                        df_second_cycle["Im"],
+                        label=legend_label,
+                    )
 
                 # Set labels and legend
                 plt.xlabel("V vs Ag/Ag+ (V)")
@@ -763,6 +770,7 @@ class CAPlotter(BasePlotter):
         excluded_ids: Optional[List[str | int]] = None,
         log_time: bool = False,
         log_current: bool = False,
+        style: str = "scatter",
     ) -> None:
         """
         Create individual plots for each CA file.
@@ -785,11 +793,20 @@ class CAPlotter(BasePlotter):
                 df = self._apply_current_density(df)
 
                 # Plot data
-                plt.scatter(
-                    df["Time"],
-                    df["Im"],
-                    s=5,
-                )
+                if style == "scatter":
+                    # Plot data
+                    plt.scatter(
+                        df["Time"],
+                        df["Im"],
+                        s=5,
+                    )
+                else:
+                    # Plot data
+                    plt.plot(
+                        df["Time"],
+                        df["Im"],
+                        s=5,
+                    )
                 if not log_time and not log_current:
                     pass
                 elif log_time and not log_current:
