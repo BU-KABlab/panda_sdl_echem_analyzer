@@ -95,6 +95,9 @@ class CVPlotter(BasePlotter):
         save_formats: List[str] = ["png", "svg"],
         show_plot: bool = True,
         save_plot: bool = True,
+        log_voltage: bool = False,
+        log_current: bool = False,
+        style: str = "scatter",
     ) -> None:
         """
         Plot second cycles from all files, sorted by experiment id.
@@ -166,18 +169,30 @@ class CVPlotter(BasePlotter):
 
             # Plot with color from the colormap
             color = custom_cmap(index / len(sorted_files))
-            plt.scatter(
-                df_second_cycle["Vsig"],
-                df_second_cycle["Im"],
-                color=color,
-                s=5,
-            )
+
+            if style == "scatter":
+                plt.scatter(
+                    df_second_cycle["Vsig"],
+                    df_second_cycle["Im"],
+                    color=color,
+                    s=5,
+                )
+            else:
+                plt.plot(
+                    df_second_cycle["Vsig"],
+                    df_second_cycle["Im"],
+                    color=color,
+                )
 
             # Add to legend
             legend_handles.append(Line2D([0], [0], color=color, lw=2))
             legend_labels.append(label)
 
         # Set plot labels and legend
+        if log_voltage:
+            plt.xscale("log")
+        if log_current:
+            plt.yscale("log")
         plt.xlabel("V vs V_Ag/AgCl (V)")
         plt.ylabel("Current Density (mA/cm²)")
         plt.legend(
@@ -208,6 +223,9 @@ class CVPlotter(BasePlotter):
         save_formats: List[str] = ["png", "svg"],
         show_plot: bool = True,
         save_plot: bool = True,
+        log_voltage: bool = False,
+        log_current: bool = False,
+        style: str = "scatter",
     ) -> None:
         """
         Plot second cycles from all files, sorted by experiment id.
@@ -277,18 +295,29 @@ class CVPlotter(BasePlotter):
 
             # Plot with color from the colormap
             color = custom_cmap(index / len(sorted_files))
-            plt.scatter(
-                df_second_cycle["Vsig"],
-                df_second_cycle["Im"],
-                color=color,
-                s=5,
-            )
+            if style == "scatter":
+                plt.scatter(
+                    df_second_cycle["Vsig"],
+                    df_second_cycle["Im"],
+                    color=color,
+                    s=5,
+                )
+            else:
+                plt.plot(
+                    df_second_cycle["Vsig"],
+                    df_second_cycle["Im"],
+                    color=color,
+                )
 
             # Add to legend
             legend_handles.append(Line2D([0], [0], color=color, lw=2))
             legend_labels.append(label)
 
         # Set plot labels and legend
+        if log_voltage:
+            plt.xscale("log")
+        if log_current:
+            plt.yscale("log")
         plt.xlabel("V vs V_Ag/AgCl (V)")
         plt.ylabel("Current Density (mA/cm²)")
         plt.legend(
@@ -313,7 +342,13 @@ class CVPlotter(BasePlotter):
             self._close_figure()
 
     def plot_all_cycles_individual(
-        self, max_cycle: int = 4, show_plot: bool = True, save_plot: bool = True
+        self,
+        max_cycle: int = 4,
+        show_plot: bool = True,
+        save_plot: bool = True,
+        log_voltage: bool = False,
+        log_current: bool = False,
+        style: str = "scatter",
     ) -> None:
         """
         Create individual plots for each file showing all cycles.
@@ -344,15 +379,26 @@ class CVPlotter(BasePlotter):
             for i in range(max_cycle):
                 df_cycle = df[df["Cycle"] == i]
                 if len(df_cycle) > 0:
-                    plt.scatter(
-                        df_cycle["Vf"],
-                        df_cycle["Im"],
-                        linestyle="--",
-                        label=f"{id} Cycle {i}",
-                        s=5,
-                    )
-
+                    if style == "scatter":
+                        plt.scatter(
+                            df_cycle["Vf"],
+                            df_cycle["Im"],
+                            linestyle="--",
+                            label=f"{id} Cycle {i}",
+                            s=5,
+                        )
+                    else:
+                        plt.plot(
+                            df_cycle["Vf"],
+                            df_cycle["Im"],
+                            linestyle="--",
+                            label=f"{id} Cycle {i}",
+                        )
             # Set labels and title
+            if log_voltage:
+                plt.xscale("log")
+            if log_current:
+                plt.yscale("log")
             plt.xlabel("V vs Ag (V)")
             plt.ylabel("Current Density (mA/cm²)")
             plt.legend()
@@ -370,7 +416,12 @@ class CVPlotter(BasePlotter):
                 self._close_figure()
 
     def plot_second_cycle_individual(
-        self, show_plot: bool = True, save_plot: bool = True, style: str = "scatter"
+        self,
+        show_plot: bool = True,
+        save_plot: bool = True,
+        log_voltage: bool = False,
+        log_current: bool = False,
+        style: str = "scatter",
     ) -> None:
         """
         Create individual plots for the second cycle of each file.
@@ -419,6 +470,10 @@ class CVPlotter(BasePlotter):
                     )
 
                 # Set labels and legend
+                if log_voltage:
+                    plt.xscale("log")
+                if log_current:
+                    plt.yscale("log")
                 plt.xlabel("V vs Ag/Ag+ (V)")
                 plt.ylabel("Current Density (mA/cm²)")
                 plt.ylim(-0.6, 1.0)
@@ -462,6 +517,7 @@ class CAPlotter(BasePlotter):
         excluded_ids: List[int] = None,
         log_time: bool = False,
         log_current: bool = False,
+        style: str = "scatter",
     ) -> None:
         """
         Plot all CA curves in one figure.
@@ -524,12 +580,19 @@ class CAPlotter(BasePlotter):
 
             # Plot with color from the colormap
             color = custom_cmap(index / len(files))
-            plt.scatter(
-                df["Time"],
-                df["Im"],
-                color=color,
-                s=5,
-            )
+            if style == "scatter":
+                plt.scatter(
+                    df["Time"],
+                    df["Im"],
+                    color=color,
+                    s=5,
+                )
+            else:
+                plt.plot(
+                    df["Time"],
+                    df["Im"],
+                    color=color,
+                )
             if not log_time and not log_current:
                 pass
             elif log_time and not log_current:
@@ -569,6 +632,9 @@ class CAPlotter(BasePlotter):
         show_plot: bool = True,
         save_plot: bool = True,
         excluded_ids: List[int] = None,
+        log_time: bool = False,
+        log_current: bool = False,
+        style: str = "scatter",
     ) -> None:
         """
         Plot CA curves sorted by voltage.
@@ -635,18 +701,30 @@ class CAPlotter(BasePlotter):
 
             # Plot with color from the colormap
             color = custom_cmap(index / len(sorted_files))
-            plt.scatter(
-                df["Time"],
-                df["Im"],
-                color=color,
-                s=5,
-            )
+            if style == "scatter":
+                plt.scatter(
+                    df["Time"],
+                    df["Im"],
+                    color=color,
+                    s=5,
+                )
+            else:
+                plt.plot(
+                    df["Time"],
+                    df["Im"],
+                    color=color,
+                )
 
             # Add to legend
             legend_handles.append(Line2D([0], [0], color=color, lw=2))
             legend_labels.append(label)
 
         # Set plot labels and legend
+        if log_time:
+            plt.xscale("log")
+        if log_current:
+            plt.yscale("log")
+
         plt.xlabel("Time (s)")
         plt.ylabel("Current Density (mA/cm²)")
         plt.legend(legend_handles, legend_labels)
@@ -669,6 +747,9 @@ class CAPlotter(BasePlotter):
         show_plot: bool = True,
         save_plot: bool = True,
         excluded_ids: List[int] = None,
+        log_time: bool = False,
+        log_current: bool = False,
+        style: str = "scatter",
     ) -> None:
         """
         Plot CA curves sorted by duration.
@@ -736,18 +817,30 @@ class CAPlotter(BasePlotter):
 
             # Plot with color from the colormap
             color = custom_cmap(index / len(sorted_files))
-            plt.scatter(
-                df["Time"],
-                df["Im"],
-                color=color,
-                s=5,
-            )
+            if style == "scatter":
+                plt.scatter(
+                    df["Time"],
+                    df["Im"],
+                    color=color,
+                    s=5,
+                )
+            else:
+                plt.plot(
+                    df["Time"],
+                    df["Im"],
+                    color=color,
+                )
 
             # Add to legend
             legend_handles.append(Line2D([0], [0], color=color, lw=2))
             legend_labels.append(label)
 
         # Set plot labels and legend
+        if log_time:
+            plt.xscale("log")
+        if log_current:
+            plt.yscale("log")
+
         plt.xlabel("Time (s)")
         plt.ylabel("Current Density (mA/cm²)")
         plt.legend(legend_handles, legend_labels)
@@ -807,19 +900,12 @@ class CAPlotter(BasePlotter):
                         df["Im"],
                         s=5,
                     )
-                if not log_time and not log_current:
-                    pass
-                elif log_time and not log_current:
-                    plt.xscale("log")
-                elif log_current and not log_time:
-                    plt.yscale("log")
-                elif log_time and log_current:
-                    plt.xscale("log")
-                    plt.yscale("log")
-                else:
-                    pass
 
                 # Set labels
+                if log_time:
+                    plt.xscale("log")
+                if log_current:
+                    plt.yscale("log")
                 plt.xlabel("Time (s)")
                 plt.ylabel("Current Density (mA/cm²)")
                 plt.legend([file_path.stem])
@@ -854,6 +940,9 @@ class OCPPlotter(BasePlotter):
         save_formats: List[str] = ["png", "svg"],
         show_plot: bool = True,
         save_plot: bool = True,
+        log_time: bool = False,
+        log_current: bool = False,
+        style: str = "scatter",
     ) -> None:
         """
         Plot all OCP curves in one figure.
@@ -904,18 +993,29 @@ class OCPPlotter(BasePlotter):
 
             # Plot with color from the colormap
             color = custom_cmap(index / len(files))
-            plt.scatter(
-                df["Time"],
-                df["Vf"],
-                color=color,
-                s=5,
-            )
+            if style == "scatter":
+                plt.scatter(
+                    df["Time"],
+                    df["Vf"],
+                    color=color,
+                    s=5,
+                )
+            else:
+                plt.plot(
+                    df["Time"],
+                    df["Vf"],
+                    color=color,
+                )
 
             # Add to legend
             legend_handles.append(Line2D([0], [0], color=color, lw=2))
             legend_labels.append(relevant_part)
 
         # Set plot labels and legend
+        if log_time:
+            plt.xscale("log")
+        if log_current:
+            plt.yscale("log")
         plt.xlabel("Time (s)")
         plt.ylabel("Voltage (V)")
         plt.tight_layout()

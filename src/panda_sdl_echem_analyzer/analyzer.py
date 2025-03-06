@@ -87,6 +87,9 @@ class ElectrochemicalAnalyzer:
         ylim: Optional[Tuple[float, float]] = None,
         show_plot: bool = True,
         save_plot: bool = True,
+        log_voltage: bool = False,
+        log_current: bool = False,
+        style: str = "scatter",
     ) -> None:
         """
         Plot second cycles from CV files.
@@ -98,11 +101,21 @@ class ElectrochemicalAnalyzer:
         """
         if sort_by.lower() == "voltage":
             self.cv_plotter.plot_second_cycles_by_voltage(
-                ylim=ylim, show_plot=show_plot
+                ylim=ylim,
+                show_plot=show_plot,
+                save_plot=save_plot,
+                log_voltage=log_voltage,
+                log_current=log_current,
+                style=style,
             )
         elif sort_by.lower() == "time":
             self.cv_plotter.plot_second_cycles_by_time(
-                ylim=ylim, show_plot=show_plot, save_plot=save_plot
+                ylim=ylim,
+                show_plot=show_plot,
+                save_plot=save_plot,
+                log_voltage=log_voltage,
+                log_current=log_current,
+                style=style,
             )
         else:
             raise ValueError(
@@ -110,7 +123,13 @@ class ElectrochemicalAnalyzer:
             )
 
     def plot_cv_all_cycles(
-        self, max_cycle: int = 4, show_plot: bool = True, save_plot: bool = True
+        self,
+        max_cycle: int = 4,
+        show_plot: bool = True,
+        save_plot: bool = True,
+        log_voltage: bool = False,
+        log_current: bool = False,
+        style: str = "scatter",
     ) -> None:
         """
         Plot all cycles for each CV file.
@@ -120,11 +139,21 @@ class ElectrochemicalAnalyzer:
             show_plot: Whether to display the plots
         """
         self.cv_plotter.plot_all_cycles_individual(
-            max_cycle=max_cycle, show_plot=show_plot
+            max_cycle=max_cycle,
+            show_plot=show_plot,
+            save_plot=save_plot,
+            log_voltage=log_voltage,
+            log_current=log_current,
+            style=style,
         )
 
     def plot_cv_second_cycle_individual(
-        self, show_plot: bool = True, save_plot: bool = True
+        self,
+        show_plot: bool = True,
+        save_plot: bool = True,
+        log_voltage: bool = False,
+        log_current: bool = False,
+        style: str = "scatter",
     ) -> None:
         """
         Plot second cycle for each CV file individually.
@@ -133,7 +162,11 @@ class ElectrochemicalAnalyzer:
             show_plot: Whether to display the plots
         """
         self.cv_plotter.plot_second_cycle_individual(
-            show_plot=show_plot, save_plot=save_plot
+            show_plot=show_plot,
+            save_plot=save_plot,
+            log_voltage=log_voltage,
+            log_current=log_current,
+            style=style,
         )
 
     def plot_ca_curves(
@@ -144,6 +177,7 @@ class ElectrochemicalAnalyzer:
         excluded_ids: Optional[List[str | int]] = None,
         log_time: bool = False,
         log_current: bool = False,
+        style: str = "scatter",
     ) -> None:
         """
         Plot chronoamperometry curves.
@@ -159,14 +193,25 @@ class ElectrochemicalAnalyzer:
                 excluded_ids=excluded_ids,
                 log_time=log_time,
                 log_current=log_current,
+                style=style,
             )
         elif sort_by.lower() == "voltage":
             self.ca_plotter.plot_by_voltage(
-                show_plot=show_plot, save_plot=save_plot, excluded_ids=excluded_ids
+                show_plot=show_plot,
+                save_plot=save_plot,
+                excluded_ids=excluded_ids,
+                log_time=log_time,
+                log_current=log_current,
+                style=style,
             )
         elif sort_by.lower() == "time":
             self.ca_plotter.plot_by_time(
-                show_plot=show_plot, save_plot=save_plot, excluded_ids=excluded_ids
+                show_plot=show_plot,
+                save_plot=save_plot,
+                excluded_ids=excluded_ids,
+                log_time=log_time,
+                log_current=log_current,
+                style=style,
             )
         else:
             raise ValueError(
@@ -180,6 +225,7 @@ class ElectrochemicalAnalyzer:
         excluded_ids: Optional[List[str | int]] = None,
         log_time: bool = False,
         log_current: bool = False,
+        style: str = "scatter",
     ) -> None:
         """
         Plot each CA file individually.
@@ -193,16 +239,30 @@ class ElectrochemicalAnalyzer:
             excluded_ids=excluded_ids,
             log_time=log_time,
             log_current=log_current,
+            style=style,
         )
 
-    def plot_ocp_curves(self, show_plot: bool = True, save_plot: bool = True) -> None:
+    def plot_ocp_curves(
+        self,
+        show_plot: bool = True,
+        save_plot: bool = True,
+        log_voltage: bool = False,
+        log_current: bool = False,
+        style: str = "scatter",
+    ) -> None:
         """
         Plot all OCP curves in one figure.
 
         Args:
             show_plot: Whether to display the plot
         """
-        self.ocp_plotter.plot_all_curves(show_plot=show_plot, save_plot=save_plot)
+        self.ocp_plotter.plot_all_curves(
+            show_plot=show_plot,
+            save_plot=save_plot,
+            log_voltage=log_voltage,
+            log_current=log_current,
+            style=style,
+        )
 
     def custom_colors(self, scheme: str = "default") -> Dict:
         """
