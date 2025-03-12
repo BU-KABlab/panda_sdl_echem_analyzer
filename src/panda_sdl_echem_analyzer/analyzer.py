@@ -246,7 +246,7 @@ class ElectrochemicalAnalyzer:
         self,
         show_plot: bool = True,
         save_plot: bool = True,
-        log_voltage: bool = False,
+        log_time: bool = False,
         log_current: bool = False,
         style: str = "scatter",
     ) -> None:
@@ -259,7 +259,7 @@ class ElectrochemicalAnalyzer:
         self.ocp_plotter.plot_all_curves(
             show_plot=show_plot,
             save_plot=save_plot,
-            log_voltage=log_voltage,
+            log_time=log_time,
             log_current=log_current,
             style=style,
         )
