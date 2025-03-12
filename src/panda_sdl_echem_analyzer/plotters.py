@@ -349,6 +349,7 @@ class CVPlotter(BasePlotter):
         log_voltage: bool = False,
         log_current: bool = False,
         style: str = "scatter",
+        experiment_id: Optional[int] = None,
     ) -> None:
         """
         Create individual plots for each file showing all cycles.
@@ -360,6 +361,8 @@ class CVPlotter(BasePlotter):
         files = load_experiment_files(self.folder_path, f"*{self.experiment_type}*.txt")
         files = [file for file in files if "OCP" not in file.stem]
         files.sort(key=lambda x: int(x.stem.split("_")[2]))
+        if experiment_id:
+            files = [file for file in files if str(experiment_id) in file.stem]
 
         for file_path in files:
             id = file_path.stem.split("_")[0]
@@ -422,6 +425,7 @@ class CVPlotter(BasePlotter):
         log_voltage: bool = False,
         log_current: bool = False,
         style: str = "scatter",
+        experiment_id: Optional[int] = None,
     ) -> None:
         """
         Create individual plots for the second cycle of each file.
@@ -432,6 +436,8 @@ class CVPlotter(BasePlotter):
         files = load_experiment_files(self.folder_path, f"*{self.experiment_type}*.txt")
         files = [file for file in files if "OCP" not in file.stem]
         files.sort(key=lambda x: int(x.stem.split("_")[2]))
+        if experiment_id:
+            files = [file for file in files if str(experiment_id) in file.stem]
         for file_path in files:
             try:
                 # Create new figure
@@ -1032,3 +1038,67 @@ class OCPPlotter(BasePlotter):
             plt.show()
         else:
             self._close_figure()
+
+    def plot_individual(
+        self,
+        show_plot: bool = True,
+        save_plot: bool = True,
+        log_time: bool = False,
+        log_current: bool = False,
+        style: str = "scatter",
+        experiment_id: Optional[int] = None,
+    ) -> None:
+        """
+        Create individual plots for each OCP file.
+
+        Args:
+            show_plot: Whether to display the plots
+        """
+        files = load_experiment_files(self.folder_path, "*OCP*.txt")
+        files.sort(key=lambda x: int(x.stem.split("_")[2]))
+        if experiment_id:
+            files = [file for file in files if experiment_id in file.stem]
+        for file_path in files:
+            try:
+                # Create new figure
+                self._setup_figure()
+
+                # Load data
+                df = load_experiment_data(file_path, self.experiment_type)
+
+                # Plot data
+                if style == "scatter":
+                    plt.scatter(
+                        df["Time"],
+                        df["Vf"],
+                        s=5,
+                    )
+                else:
+                    plt.plot(
+                        df["Time"],
+                        df["Vf"],
+                        s=5,
+                    )
+
+                # Set labels
+                if log_time:
+                    plt.xscale("log")
+                if log_current:
+                    plt.yscale("log")
+                plt.xlabel("Time (s)")
+                plt.ylabel("Voltage (V)")
+                plt.legend([file_path.stem])
+                plt.tight_layout()
+
+                # Save the figure
+                if save_plot:
+                    self._save_figure(f"{file_path.stem}_plot", ["png", "svg"])
+
+                # Show or close
+                if show_plot:
+                    plt.show()
+                else:
+                    self._close_figure()
+
+            except Exception as e:
+                print(f"Error processing file {file_path}: {e}")
